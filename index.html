@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#ffb2ce" />
-<title>Herní svět 10.0</title>
+<title>Viktorčin herní svět</title>
 <style>
 :root{--bg1:#fff8fc;--bg2:#eef8ff;--card:#ffffffee;--text:#223247;--muted:#62758d;--shadow:0 18px 44px rgba(67,91,125,.16);--radius:30px;--ok:#79de89;--hint:#7dd8ff;--gold:#ffe57a;--pink:#ffd6e5;--ice:#dff3ff}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,19 +38,24 @@ background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius)}
 .mascotCard{display:flex;gap:14px;align-items:center}.mascotImg{width:96px;height:96px;object-fit:contain;animation:bob 2.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}} .speechBubble{padding:14px 16px;font-size:18px;font-weight:800;line-height:1.35;flex:1}
 .choiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
-.taskCard{min-height:240px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;transition:transform .14s ease, outline .14s ease}
+.taskCard{min-height:300px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;transition:transform .14s ease, outline .14s ease}
 .taskCard:hover{transform:translateY(-2px)} .taskCard.good{outline:4px solid var(--ok);transform:scale(1.03)} .taskCard.bad{animation:shake .28s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}} .taskCard img{width:160px;height:160px;object-fit:contain}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}} .taskCard img{width:200px;height:200px;object-fit:contain}
 .taskCard .t{font-size:26px;font-weight:900}.taskCard .en{display:none}.taskCard .s{display:none}
+body.lang-both .taskCard .en,body.lang-en .taskCard .en{display:block}
+body.lang-en .taskCard .t{display:none}
 .dropWrap{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.dropZone{min-height:196px;padding:14px;border:3px dashed #d7deea;transition:all .14s ease}.dropZone.activeHint{border-color:var(--hint);background:#f2fbff}.dropZone.done{border-color:var(--ok);background:#f3fff5}
 .dropTitle{font-size:22px;font-weight:900}.dropSub{font-size:15px;color:var(--muted);margin-top:6px}.dropArea{min-height:84px;margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
-.dragGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.dragItem{min-height:220px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;touch-action:none;user-select:none;transition:transform .14s ease}.dragItem:hover{transform:translateY(-2px)}.dragItem.hidden{visibility:hidden}
-.dragItem img{width:140px;height:140px;object-fit:contain}.dragItem .n{font-size:22px;font-weight:900}.dragItem .en{display:none}.dragItem .s{display:none}
-.memoryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.memoryCard{min-height:200px;display:grid;place-items:center;cursor:pointer;padding:10px;background:linear-gradient(135deg,#fff,#f3f8ff);transition:transform .14s ease}
-.memoryCard:hover{transform:translateY(-2px)} .memoryCard img{width:140px;height:140px;object-fit:contain}.memoryBack{font-size:80px}.memoryCard.matched{outline:4px solid var(--ok)}
+.dragGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.dragItem{min-height:280px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;touch-action:none;user-select:none;transition:transform .14s ease}.dragItem:hover{transform:translateY(-2px)}.dragItem.hidden{visibility:hidden}
+.dragItem img{width:180px;height:180px;object-fit:contain}.dragItem .n{font-size:22px;font-weight:900}.dragItem .en{display:none}.dragItem .s{display:none}
+body.lang-both .dragItem .en,body.lang-en .dragItem .en{display:block}
+body.lang-en .dragItem .n{display:none}
+.memoryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.memoryCard{min-height:260px;display:grid;place-items:center;cursor:pointer;padding:10px;background:linear-gradient(135deg,#fff,#f3f8ff);transition:transform .14s ease}
+.memoryCard:hover{transform:translateY(-2px)} .memoryCard img{width:180px;height:180px;object-fit:contain}.memoryBack{font-size:80px}.memoryCard.matched{outline:4px solid var(--ok)}
 .stickerPanel h3{margin:0 0 10px;font-size:22px}.stickerChip{padding:8px 12px;border-radius:999px;background:#fff;font-size:14px;font-weight:800;box-shadow:var(--shadow)}
 .sticker{width:84px;height:84px;object-fit:contain;border-radius:22px;background:#fff;box-shadow:var(--shadow);padding:6px}
 .footerNote{text-align:center;color:var(--muted);margin-top:14px;font-size:14px}
+body.lang-cs .englishLine{display:none}
 @media (max-width:980px){.layout2,.layout3{grid-template-columns:1fr}.dragGrid,.memoryGrid{grid-template-columns:repeat(2,1fr)}} 
 @media (max-width:620px){.choiceGrid,.dropWrap{grid-template-columns:1fr}.dragGrid,.memoryGrid{grid-template-columns:repeat(2,1fr)}.toolbar button{width:100%}.toolbar{width:100%}}
 </style>
@@ -61,8 +66,7 @@ background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius)}
     <div class="brand">
       <img src="assets/icons/logo.svg" class="logo" alt="Logo" />
       <div>
-        <h1>Herní svět 10.0</h1>
-        <div class="sub">Finální vzhled + audio-ready build + víc polish</div>
+        <h1>Viktorčin herní svět</h1>
       </div>
     </div>
     <div class="toolbar">
@@ -75,7 +79,6 @@ background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius)}
 
   <section id="homeScreen" class="screen active">
     <div class="hero">
-      <div class="guide">Tohle je 10.0 – nejucelenější verze.<small>Má lepší flow, více polish, sbírání samolepek a připravený audio skript pro pozdější namluvení.</small></div>
       <div class="miniActions"><button class="primary" id="continueBtn">▶️ Pokračovat</button></div>
     </div>
     <div class="layout3">
@@ -132,7 +135,6 @@ background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius)}
     </div>
   </section>
 
-  <div class="footerNote">Skutečně profesionální audio můžeš později doplnit do složky audio podle přiloženého skriptu.</div>
 </div>
 
 <script>
@@ -238,9 +240,9 @@ function repeatSpeech(){ if(state.lastSpeechParts) speakParts(state.lastSpeechPa
 function hintAction(){ const task=currentTask(); const hint=task.hints[Math.min(state.hintStep, task.hints.length-1)]; state.hintStep=Math.min(state.hintStep+1, task.hints.length-1); els.speech.innerHTML=`${hint}<small>Zkus to teď znovu.</small>`; beep('hint'); speakParts([{text:hint,lang:'cs-CZ'}]); }
 function nextAction(){ state.currentTaskIndex+=1; if(!finishWorldIfDone()) renderTask(); }
 els.soundBtn.addEventListener('click', async()=>{ state.soundEnabled=true; initAudio(); if(state.audioCtx&&state.audioCtx.state==='suspended'){ try{ await state.audioCtx.resume(); }catch(e){} } els.soundBtn.textContent='🔊 Zvuk zapnutý'; beep('ok'); speakParts([{text:'Ahoj! Jdeme si hrát.',lang:'cs-CZ'},{text:'Let us play.',lang:'en-US',rate:.9}]); });
-const langCycle=['both','cs','en']; const langLabels={'both':'🌍 CZ+EN','cs':'🇨🇿 Pouze CZ','en':'🇬🇧 Pouze EN'}; els.langBtn.addEventListener('click',()=>{ const idx=(langCycle.indexOf(state.langMode)+1)%langCycle.length; state.langMode=langCycle[idx]; els.langBtn.textContent=langLabels[state.langMode]; });
+const langCycle=['both','cs','en']; const langLabels={'both':'🌍 CZ+EN','cs':'🇨🇿 Pouze CZ','en':'🇬🇧 Pouze EN'}; els.langBtn.addEventListener('click',()=>{ const idx=(langCycle.indexOf(state.langMode)+1)%langCycle.length; state.langMode=langCycle[idx]; els.langBtn.textContent=langLabels[state.langMode]; document.body.className='lang-'+state.langMode; });
 els.homeBtn.addEventListener('click', renderHome); els.repeatBtn.addEventListener('click', repeatSpeech); els.continueBtn.addEventListener('click', ()=>{ const next=worlds.find(w=>state.unlockedWorlds.includes(w.id)&&!(state.worldProgress[w.id]||{}).done)||worlds[0]; startWorld(next.id); }); els.hintBtn.addEventListener('click', hintAction); els.nextBtn.addEventListener('click', nextAction);
-loadState(); renderHome();
+document.body.className='lang-'+state.langMode; loadState(); renderHome();
 </script>
 </body>
 </html>
