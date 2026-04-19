@@ -18,16 +18,16 @@ const { useState, useEffect, useCallback, useRef } = React;
 
 /* ═══════════════════ DATA ═══════════════════ */
 const ANIMALS = [
-  { id:"dog",emoji:"🐶",name:"Pes",en:"Dog",sound:"Haf haf!",bg:"#FFF3E0" },
-  { id:"cat",emoji:"🐱",name:"Kočka",en:"Cat",sound:"Mňau!",bg:"#F3E5F5" },
-  { id:"cow",emoji:"🐄",name:"Kráva",en:"Cow",sound:"Bůů!",bg:"#E8F5E9" },
-  { id:"duck",emoji:"🦆",name:"Kachna",en:"Duck",sound:"Kač kač!",bg:"#E3F2FD" },
-  { id:"pig",emoji:"🐷",name:"Prasátko",en:"Pig",sound:"Chro chro!",bg:"#FCE4EC" },
-  { id:"horse",emoji:"🐴",name:"Kůň",en:"Horse",sound:"Íhaha!",bg:"#FFF8E1" },
-  { id:"hen",emoji:"🐔",name:"Slepice",en:"Hen",sound:"Kokodák!",bg:"#FFFDE7" },
-  { id:"sheep",emoji:"🐑",name:"Ovce",en:"Sheep",sound:"Béé!",bg:"#F1F8E9" },
-  { id:"frog",emoji:"🐸",name:"Žába",en:"Frog",sound:"Kvak!",bg:"#E0F7FA" },
-  { id:"lion",emoji:"🦁",name:"Lev",en:"Lion",sound:"Grrr!",bg:"#FFF3E0" },
+  { id:"dog",  emoji:"🐶",name:"Pes",      en:"Dog",     sound:"Haf haf!", soundSpeak:"haf haf",   bg:"#FFF3E0" },
+  { id:"cat",  emoji:"🐱",name:"Kočka",    en:"Cat",     sound:"Mňau!",    soundSpeak:"mňau",      bg:"#F3E5F5" },
+  { id:"cow",  emoji:"🐄",name:"Kráva",    en:"Cow",     sound:"Búú!",     soundSpeak:"búú",       bg:"#E8F5E9" },
+  { id:"duck", emoji:"🦆",name:"Kachna",   en:"Duck",    sound:"Kač kač!", soundSpeak:"kač kač",   bg:"#E3F2FD" },
+  { id:"pig",  emoji:"🐷",name:"Prasátko", en:"Pig",     sound:"Chro chro!",soundSpeak:"chro chro",bg:"#FCE4EC" },
+  { id:"horse",emoji:"🐴",name:"Kůň",      en:"Horse",   sound:"Íhaha!",   soundSpeak:"íhaha",     bg:"#FFF8E1" },
+  { id:"hen",  emoji:"🐔",name:"Slepice",  en:"Hen",     sound:"Kokodák!", soundSpeak:"kokodák",   bg:"#FFFDE7" },
+  { id:"sheep",emoji:"🐑",name:"Ovce",     en:"Sheep",   sound:"Béé!",     soundSpeak:"béé",       bg:"#F1F8E9" },
+  { id:"frog", emoji:"🐸",name:"Žába",     en:"Frog",    sound:"Kvak!",    soundSpeak:"kvak",      bg:"#E0F7FA" },
+  { id:"lion", emoji:"🦁",name:"Lev",      en:"Lion",    sound:"Grrr!",    soundSpeak:"grrr",      bg:"#FFF3E0" },
 ];
 const COLORS_DATA = [
   { name:"Červená",en:"Red",hex:"#EF5350",things:["🍎","🍓","❤️","🌹"] },
@@ -67,12 +67,25 @@ const sfxTap = ()=>tone(880,0.05,'sine',0.07);
 const sfxWin = ()=>[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,0.16),i*90));
 const sfxPop = ()=>tone(600+Math.random()*400,0.08);
 
-const say = (text,lang='cs-CZ',rate=1)=>{
-  if(!window.speechSynthesis) return;
+const say = (text, lang='cs-CZ', rate=0.9) => {
+  if (!window.speechSynthesis) return;
   speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text); u.lang=lang; u.rate=rate;
-  const v=speechSynthesis.getVoices().find(v=>v.lang?.startsWith(lang.slice(0,2)));
-  if(v) u.voice=v; speechSynthesis.speak(u);
+  const speak = () => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang; u.rate = rate;
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang === lang) ||
+              voices.find(v => v.lang?.startsWith(lang.slice(0,2)));
+    if (v) u.voice = v;
+    speechSynthesis.speak(u);
+  };
+  if (speechSynthesis.getVoices().length > 0) {
+    speak();
+  } else {
+    const onLoaded = () => { speak(); speechSynthesis.removeEventListener('voiceschanged', onLoaded); };
+    speechSynthesis.addEventListener('voiceschanged', onLoaded);
+    setTimeout(speak, 500); // fallback if event never fires
+  }
 };
 
 /* ═══════════════════ CONFETTI ═══════════════════ */
@@ -161,7 +174,7 @@ function ExploreGame({onStar,onFinish}){
   const [lastTap,setLastTap]=useState(null);
   const tapItem=(item,idx)=>{
     sfxPop(); setLastTap(item);
-    say(`${item.name}. ${item.sound||''}`,`cs-CZ`);
+    say(`${item.name}. ${item.soundSpeak||item.sound||''}`,`cs-CZ`);
     setTimeout(()=>say(item.en,'en-US',0.85),1200);
     if(!tapped.has(idx)){
       const nt=new Set(tapped); nt.add(idx); setTapped(nt);
@@ -201,7 +214,7 @@ function AnimalGame({onStar,onFinish}){
   const options = opts[qi];
 
   useEffect(()=>{
-    say(`Kdo dělá ${q.sound}`);
+    say(`Kdo dělá ${q.soundSpeak||q.sound}`);
   },[qi]);
 
   const answer = (a,idx)=>{
@@ -337,6 +350,8 @@ function SortGame({onStar,onFinish}){
   const [feedback,setFeedback]=useState(null);
   const remaining = allItems.filter(it=>![...placed.fruit,...placed.animal].includes(it.emoji));
 
+  useEffect(()=>{ say('Vyber obrázek a zařaď ho do správné skupiny!'); },[]);
+
   const selectItem=(it)=>{ sfxTap(); setSelected(it); setFeedback(null); };
   const placeIn=(gid)=>{
     if(!selected) return;
@@ -383,6 +398,8 @@ function MemoryGame({onStar,onFinish}){
   const [open,setOpen]=useState([]);
   const [matched,setMatched]=useState(new Set());
   const [locked,setLocked]=useState(false);
+
+  useEffect(()=>{ say('Najdi dvojice! Ťukni na kartičky a hledej stejné obrázky.'); },[]);
 
   const flip = (idx)=>{
     if(locked||open.includes(idx)||matched.has(cards[idx].id)) return;
