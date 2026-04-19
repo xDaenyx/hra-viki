@@ -1,153 +1,244 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vikiho dětská hra</title>
-    <style>
-      :root {
-        font-family: "Arial", sans-serif;
-        color: #1f2a44;
-        background: #fff7f0;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-        display: grid;
-        place-items: center;
-      }
-
-      .game {
-        width: min(92vw, 460px);
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 10px 24px rgba(31, 42, 68, 0.12);
-      }
-
-      h1 {
-        margin-top: 0;
-        color: #ff5f7e;
-        text-align: center;
-      }
-
-      p {
-        line-height: 1.5;
-      }
-
-      .controls {
-        display: flex;
-        gap: 8px;
-        margin: 16px 0;
-      }
-
-      input,
-      button {
-        font-size: 1rem;
-        border-radius: 10px;
-        border: 2px solid #ffd4de;
-        padding: 10px;
-      }
-
-      input {
-        flex: 1;
-      }
-
-      button {
-        cursor: pointer;
-        background: #ff5f7e;
-        color: #fff;
-        border-color: #ff5f7e;
-      }
-
-      button:hover {
-        background: #ff3f65;
-      }
-
-      .status {
-        min-height: 24px;
-        font-weight: 700;
-      }
-
-      .scoreboard {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 700;
-        color: #455b8b;
-      }
-    </style>
-  </head>
-  <body>
-    <main class="game">
-      <h1>🎈 Hádej číslo 🎈</h1>
-      <p>Uhádni tajné číslo od <strong>1 do 10</strong>. Máš maximálně 5 pokusů.</p>
-
-      <div class="controls">
-        <input id="guess" type="number" min="1" max="10" placeholder="Zadej číslo" />
-        <button id="check" type="button">Zkusit</button>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#ffb2ce" />
+<title>Herní svět 10.0</title>
+<style>
+:root{--bg1:#fff8fc;--bg2:#eef8ff;--card:#ffffffee;--text:#223247;--muted:#62758d;--shadow:0 18px 44px rgba(67,91,125,.16);--radius:30px;--ok:#79de89;--hint:#7dd8ff;--gold:#ffe57a;--pink:#ffd6e5;--ice:#dff3ff}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:
+radial-gradient(circle at top left,#fff6c8 0,transparent 25%),
+radial-gradient(circle at top right,#eaffef 0,transparent 22%),
+radial-gradient(circle at bottom right,#efe8ff 0,transparent 22%),
+linear-gradient(180deg,var(--bg1),var(--bg2));min-height:100vh}
+.app{max-width:1240px;margin:0 auto;padding:16px}
+.top,.toolbar,.miniActions,.pills,.stickers{display:flex;gap:10px;flex-wrap:wrap}
+.top{justify-content:space-between;align-items:center;margin-bottom:14px}
+.brand{display:flex;gap:12px;align-items:center}.logo{width:72px;height:72px;border-radius:22px;background:#fff;box-shadow:var(--shadow);padding:6px}
+h1{margin:0;font-size:clamp(30px,4vw,44px)} .sub{margin-top:4px;color:var(--muted);font-size:15px}
+button{border:none;border-radius:18px;padding:14px 18px;background:#fff;box-shadow:var(--shadow);cursor:pointer;font-size:18px;font-weight:800;color:var(--text)}
+button:disabled{opacity:.55}.primary{background:linear-gradient(135deg,#ffd97d,#ffb2ce)} .secondary{background:linear-gradient(135deg,#b5f0ff,#d6ffe0)} .soft{background:#ffffffdd}
+.screen{display:none}.screen.active{display:block;animation:fade .24s ease}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero,.panel,.worldCard,.taskCard,.dropZone,.dragItem,.progressCard,.speechBubble,.mascotCard,.worldBanner,.memoryCard,.stickerPanel{
+background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius)}
+.hero,.panel,.worldBanner,.stickerPanel{padding:16px}.guide{font-size:clamp(20px,3.3vw,31px);font-weight:900;line-height:1.22;margin-bottom:8px}.guide small,.speechBubble small{display:block;font-size:16px;font-weight:600;color:var(--muted);margin-top:8px}
+.progressCard{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-top:16px;padding:14px 16px}.stars{font-size:28px;letter-spacing:4px}
+.worldGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:16px}
+.worldCard{padding:18px;min-height:244px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .16s ease}
+.worldCard:hover{transform:translateY(-2px)}.worldCard.locked{opacity:.68}.worldTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.worldEmoji{font-size:44px}
+.worldTitle{font-size:24px;font-weight:900;margin-top:8px}.worldDesc{margin-top:8px;color:var(--muted);font-size:16px;line-height:1.4}.unlock,.pill,.tinyChip{display:inline-flex;padding:8px 12px;border-radius:999px;background:#f4f7fb;font-size:14px;font-weight:800}
+.worldBanner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.layout2{display:grid;grid-template-columns:1.02fr .98fr;gap:16px}.layout3{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.showcase{min-height:340px;display:flex;align-items:center;justify-content:center;border-radius:28px;position:relative;overflow:hidden;background:linear-gradient(135deg,#fff,#eef8ff)}
+.showcase .label{position:absolute;left:14px;top:14px;background:#ffffffd9;padding:10px 14px;border-radius:999px;font-weight:800;font-size:16px}
+.itemView{text-align:center}.itemImg{width:min(64vw,320px);height:min(64vw,320px);object-fit:contain;filter:drop-shadow(0 8px 18px rgba(0,0,0,.14));transition:transform .22s ease}.itemImg.pop{transform:scale(1.08)}
+.itemName{font-size:34px;font-weight:900;margin-top:12px}.itemHint{margin-top:6px;font-size:17px;color:#203249cc}.englishLine{margin-top:8px;font-size:20px;font-weight:800;color:#45627b}
+.mascotCard{display:flex;gap:14px;align-items:center}.mascotImg{width:96px;height:96px;object-fit:contain;animation:bob 2.8s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}} .speechBubble{padding:14px 16px;font-size:18px;font-weight:800;line-height:1.35;flex:1}
+.choiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.taskCard{min-height:170px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;transition:transform .14s ease, outline .14s ease}
+.taskCard:hover{transform:translateY(-2px)} .taskCard.good{outline:4px solid var(--ok);transform:scale(1.03)} .taskCard.bad{animation:shake .28s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}} .taskCard img{width:96px;height:96px;object-fit:contain}
+.taskCard .t{font-size:22px;font-weight:900}.taskCard .en{font-size:16px;font-weight:700;color:#4b657d}.taskCard .s{font-size:14px;color:var(--muted)}
+.dropWrap{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.dropZone{min-height:196px;padding:14px;border:3px dashed #d7deea;transition:all .14s ease}.dropZone.activeHint{border-color:var(--hint);background:#f2fbff}.dropZone.done{border-color:var(--ok);background:#f3fff5}
+.dropTitle{font-size:22px;font-weight:900}.dropSub{font-size:15px;color:var(--muted);margin-top:6px}.dropArea{min-height:84px;margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.dragGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.dragItem{min-height:152px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;touch-action:none;user-select:none;transition:transform .14s ease}.dragItem:hover{transform:translateY(-2px)}.dragItem.hidden{visibility:hidden}
+.dragItem img{width:86px;height:86px;object-fit:contain}.dragItem .n{font-size:20px;font-weight:900}.dragItem .en{font-size:15px;font-weight:700;color:#4b657d}.dragItem .s{font-size:13px;color:var(--muted)}
+.memoryGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}.memoryCard{min-height:150px;display:grid;place-items:center;cursor:pointer;padding:10px;background:linear-gradient(135deg,#fff,#f3f8ff);transition:transform .14s ease}
+.memoryCard:hover{transform:translateY(-2px)} .memoryCard img{width:92px;height:92px;object-fit:contain}.memoryBack{font-size:52px}.memoryCard.matched{outline:4px solid var(--ok)}
+.stickerPanel h3{margin:0 0 10px;font-size:22px}.stickerChip{padding:8px 12px;border-radius:999px;background:#fff;font-size:14px;font-weight:800;box-shadow:var(--shadow)}
+.sticker{width:84px;height:84px;object-fit:contain;border-radius:22px;background:#fff;box-shadow:var(--shadow);padding:6px}
+.footerNote{text-align:center;color:var(--muted);margin-top:14px;font-size:14px}
+@media (max-width:980px){.layout2,.layout3{grid-template-columns:1fr}.dragGrid,.memoryGrid{grid-template-columns:repeat(3,1fr)}} 
+@media (max-width:620px){.choiceGrid,.dropWrap,.dragGrid,.memoryGrid{grid-template-columns:1fr}.toolbar button{width:100%}.toolbar{width:100%}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand">
+      <img src="assets/icons/logo.svg" class="logo" alt="Logo" />
+      <div>
+        <h1>Herní svět 10.0</h1>
+        <div class="sub">Finální vzhled + audio-ready build + víc polish</div>
       </div>
+    </div>
+    <div class="toolbar">
+      <button id="soundBtn" class="primary">🔊 Zvuk</button>
+      <button id="homeBtn" class="soft">🏠 Světy</button>
+      <button id="repeatBtn" class="soft">🗣️ Zopakovat</button>
+    </div>
+  </div>
 
-      <p id="status" class="status" aria-live="polite">Začni hádat 😊</p>
-
-      <div class="scoreboard">
-        <span id="attempts">Pokusy: 0/5</span>
-        <span id="wins">Výhry: 0</span>
+  <section id="homeScreen" class="screen active">
+    <div class="hero">
+      <div class="guide">Tohle je 10.0 – nejucelenější verze.<small>Má lepší flow, více polish, sbírání samolepek a připravený audio skript pro pozdější namluvení.</small></div>
+      <div class="miniActions"><button class="primary" id="continueBtn">▶️ Pokračovat</button></div>
+    </div>
+    <div class="layout3">
+      <div class="progressCard">
+        <div>
+          <div style="font-weight:900;font-size:22px">Celkový pokrok</div>
+          <div id="progressText" style="color:var(--muted);margin-top:4px;font-size:16px"></div>
+        </div>
+        <div class="stars" id="starDisplay"></div>
       </div>
-    </main>
+      <div class="stickerPanel">
+        <h3>Samolepky</h3>
+        <div class="stickers" id="stickersBar"></div>
+      </div>
+    </div>
+    <div class="worldGrid" id="worldGrid"></div>
+  </section>
 
-    <script>
-      let secret = Math.floor(Math.random() * 10) + 1;
-      let attempts = 0;
-      let wins = 0;
-      const maxAttempts = 5;
+  <section id="playScreen" class="screen">
+    <div class="worldBanner">
+      <div>
+        <div style="font-size:26px;font-weight:900" id="bannerTitle">Svět</div>
+        <div style="color:var(--muted);margin-top:4px" id="bannerSub">Úkol</div>
+      </div>
+      <div class="pills">
+        <div class="pill" id="worldStarsPill"></div>
+        <div class="pill" id="taskPill"></div>
+      </div>
+    </div>
 
-      const guessInput = document.getElementById("guess");
-      const checkButton = document.getElementById("check");
-      const statusText = document.getElementById("status");
-      const attemptsText = document.getElementById("attempts");
-      const winsText = document.getElementById("wins");
+    <div class="layout2">
+      <div class="panel">
+        <div class="showcase">
+          <div class="label" id="showcaseLabel">Hra</div>
+          <div class="itemView">
+            <img id="showImg" class="itemImg" src="assets/cards/apple.svg" alt="">
+            <div class="itemName" id="showName">Vyber správnou věc</div>
+            <div class="itemHint" id="showHint"></div>
+            <div class="englishLine" id="showEnglish"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="mascotCard">
+          <img id="mascotImg" class="mascotImg" src="assets/mascots/fox.svg" alt="">
+          <div class="speechBubble" id="speech">Poslouchej a zkus to.<small>Když to nevyjde, dostaneš jemnou nápovědu.</small></div>
+        </div>
+        <div class="miniActions">
+          <button class="secondary" id="hintBtn">💡 Nápověda</button>
+          <button class="soft" id="nextBtn">➡️ Přeskočit</button>
+        </div>
+        <div id="playArea"></div>
+      </div>
+    </div>
+  </section>
 
-      function restartRound(message) {
-        attempts = 0;
-        secret = Math.floor(Math.random() * 10) + 1;
-        attemptsText.textContent = "Pokusy: 0/5";
-        statusText.textContent = message;
-        guessInput.value = "";
-      }
+  <div class="footerNote">Skutečně profesionální audio můžeš později doplnit do složky audio podle přiloženého skriptu.</div>
+</div>
 
-      function checkGuess() {
-        const value = Number(guessInput.value);
+<script>
+const STORAGE_KEY='herni_svet_10_progress_v1';
+const praiseLines=['Výborně!','Skvěle!','Paráda!','To se povedlo!','Super!'];
+const gentleMissLines=['To nic.','Nevadí.','Zkusíme to ještě jednou.','Ještě to zkus.'];
+const stickerDefs=[
+  {id:'star', img:'assets/ui/sticker_star.svg', label:'Hvězda'},
+  {id:'heart', img:'assets/ui/sticker_heart.svg', label:'Srdíčko'},
+  {id:'snow', img:'assets/ui/sticker_snow.svg', label:'Vločka'}
+];
 
-        if (!Number.isInteger(value) || value < 1 || value > 10) {
-          statusText.textContent = "Zadej celé číslo od 1 do 10.";
-          return;
-        }
+const worlds=[
+ {id:'colors',title:'Barvy a věci',emoji:'🌈',mascot:'assets/mascots/fox.svg',stars:4,unlockAt:0,desc:'Barvy, ovoce a věci kolem nás.',bg:'linear-gradient(135deg,#fff9d9,#fff)',
+  tasks:[
+   {type:'choice',label:'Barva',question:'Co je zelené?',badge:'zelená • green',img:'assets/cards/watermelon.svg',name:'meloun',hint:'Je zelený a kulatý.',en:'watermelon',
+    options:[{img:'assets/cards/watermelon.svg',name:'meloun',en:'watermelon',ok:true,sub:'ovoce'},{img:'assets/cards/apple.svg',name:'jablko',en:'apple',ok:false,sub:'červené'},{img:'assets/cards/tshirt.svg',name:'tričko',en:'t-shirt',ok:false,sub:'oblečení'},{img:'assets/cards/ball.svg',name:'míč',en:'ball',ok:false,sub:'kulatý'}],
+    hints:['Je to ovoce.','Je to kulaté.','Je zelené venku a červené uvnitř.']},
+   {type:'choice',label:'Barva',question:'Co je modré?',badge:'modrá • blue',img:'assets/cards/cap.svg',name:'čepice',hint:'Nosí se na hlavě.',en:'cap',
+    options:[{img:'assets/cards/cap.svg',name:'čepice',en:'cap',ok:true,sub:'oblečení'},{img:'assets/cards/banana.svg',name:'banán',en:'banana',ok:false,sub:'ovoce'},{img:'assets/cards/wood.svg',name:'dřevo',en:'wood',ok:false,sub:'materiál'},{img:'assets/cards/window.svg',name:'okno',en:'window',ok:false,sub:'doma'}],
+    hints:['Je to oblečení.','Nosí se na hlavě.','Může být modrá.']}
+  ]},
+ {id:'animals',title:'Zvířata',emoji:'🐶',mascot:'assets/mascots/bear.svg',stars:4,unlockAt:2,desc:'Zvířata a nápovědy.',bg:'linear-gradient(135deg,#eaffef,#fff)',
+  tasks:[
+   {type:'choice',label:'Zvíře',question:'Kdo dělá haf haf?',badge:'pes • dog',img:'assets/cards/dog.svg',name:'pes',hint:'Je to domácí zvíře.',en:'dog',
+    options:[{img:'assets/cards/dog.svg',name:'pes',en:'dog',ok:true,sub:'haf haf'},{img:'assets/cards/cat.svg',name:'kočka',en:'cat',ok:false,sub:'mňau'},{img:'assets/cards/cow.svg',name:'kráva',en:'cow',ok:false,sub:'bú'},{img:'assets/cards/duck.svg',name:'kachna',en:'duck',ok:false,sub:'kač kač'}],
+    hints:['Je to domácí zvíře.','Dělá haf haf.','Chodí na vodítku.']},
+   {type:'choice',label:'Zvíře',question:'Kdo dělá mňau?',badge:'kočka • cat',img:'assets/cards/cat.svg',name:'kočka',hint:'Má vousky a tlapky.',en:'cat',
+    options:[{img:'assets/cards/cat.svg',name:'kočka',en:'cat',ok:true,sub:'mňau'},{img:'assets/cards/dog.svg',name:'pes',en:'dog',ok:false,sub:'haf'},{img:'assets/cards/duck.svg',name:'kachna',en:'duck',ok:false,sub:'kač kač'},{img:'assets/cards/cow.svg',name:'kráva',en:'cow',ok:false,sub:'bú'}],
+    hints:['Má tlapky.','Má vousky.','Dělá mňau.']}
+  ]},
+ {id:'drag',title:'Tahání a třídění',emoji:'🧺',mascot:'assets/mascots/rabbit.svg',stars:4,unlockAt:5,desc:'Přetahuj věci do správných skupin.',bg:'linear-gradient(135deg,#eef8ff,#fff)',
+  tasks:[
+   {type:'drag',label:'Třídění',question:'Ovoce a oblečení',badge:'fruit • clothes',img:'assets/cards/apple.svg',name:'třídění',hint:'Přesuň věci tam, kam patří.',en:'sort',
+    zones:[{id:'fruit',title:'Košík na ovoce',sub:'Sem patří ovoce.'},{id:'clothes',title:'Skříň na oblečení',sub:'Sem patří oblečení.'}],
+    items:[{img:'assets/cards/apple.svg',name:'jablko',en:'apple',zone:'fruit',sub:'ovoce'},{img:'assets/cards/banana.svg',name:'banán',en:'banana',zone:'fruit',sub:'ovoce'},{img:'assets/cards/tshirt.svg',name:'tričko',en:'t-shirt',zone:'clothes',sub:'oblečení'},{img:'assets/cards/sock.svg',name:'ponožka',en:'sock',zone:'clothes',sub:'oblečení'}],
+    hints:['Přemýšlej, co se jí a co se obléká.','Jablko a banán jsou ovoce.','Tričko a ponožka jsou oblečení.']}
+  ]},
+ {id:'count',title:'Počítání',emoji:'🔢',mascot:'assets/mascots/owl.svg',stars:4,unlockAt:8,desc:'Počítání a množství.',bg:'linear-gradient(135deg,#f4efff,#fff)',
+  tasks:[
+   {type:'choice',label:'Počet',question:'Kde jsou 2 jablka?',badge:'2 • two',img:'assets/cards/two_apples.svg',name:'dvě jablka',hint:'Hledej dvě.',en:'two apples',
+    options:[{img:'assets/cards/two_apples.svg',name:'2 jablka',en:'two apples',ok:true,sub:'dvě'},{img:'assets/cards/apple.svg',name:'1 jablko',en:'one apple',ok:false,sub:'jedno'},{img:'assets/cards/three_stars.svg',name:'3 hvězdy',en:'three stars',ok:false,sub:'tři'},{img:'assets/cards/banana.svg',name:'1 banán',en:'one banana',ok:false,sub:'jedno'}],
+    hints:['Hledáme dvě věci.','Je to víc než jedna.','Jsou to přesně 2 jablka.']}
+  ]},
+ {id:'transport',title:'Doprava',emoji:'🚗',mascot:'assets/mascots/pig.svg',stars:4,unlockAt:10,desc:'Auta, vlaky, lodě a letadla.',bg:'linear-gradient(135deg,#fff2e6,#fff)',
+  tasks:[
+   {type:'choice',label:'Doprava',question:'Co jezdí po silnici?',badge:'car • road',img:'assets/cards/car.svg',name:'auto',hint:'Jezdí po silnici.',en:'car',
+    options:[{img:'assets/cards/car.svg',name:'auto',en:'car',ok:true,sub:'silnice'},{img:'assets/cards/boat.svg',name:'loď',en:'boat',ok:false,sub:'voda'},{img:'assets/cards/plane.svg',name:'letadlo',en:'plane',ok:false,sub:'obloha'},{img:'assets/cards/train.svg',name:'vlak',en:'train',ok:false,sub:'koleje'}],
+    hints:['Jezdí po silnici.','Má kola.','Je to auto.']}
+  ]},
+ {id:'winter',title:'Zimní svět',emoji:'❄️',mascot:'assets/mascots/princess.svg',stars:4,unlockAt:12,desc:'Sníh, led a zimní věci.',bg:'linear-gradient(135deg,#eefaff,#fff)',
+  tasks:[
+   {type:'choice',label:'Zima',question:'Co patří princezně?',badge:'crown • princess',img:'assets/cards/crown.svg',name:'koruna',hint:'Nosí se na hlavě.',en:'crown',
+    options:[{img:'assets/cards/crown.svg',name:'koruna',en:'crown',ok:true,sub:'princezna'},{img:'assets/cards/piglet.svg',name:'prasátko',en:'piglet',ok:false,sub:'zvíře'},{img:'assets/cards/window.svg',name:'okno',en:'window',ok:false,sub:'doma'},{img:'assets/cards/wood.svg',name:'dřevo',en:'wood',ok:false,sub:'materiál'}],
+    hints:['Je to lesklé.','Nosí se to na hlavě.','Je to koruna.']}
+  ]},
+ {id:'memory',title:'Pexeso',emoji:'🧠',mascot:'assets/mascots/pig.svg',stars:4,unlockAt:14,desc:'Najdi dvojice stejných obrázků.',bg:'linear-gradient(135deg,#fff3fa,#fff)',
+  tasks:[
+   {type:'memory',label:'Paměť',question:'Najdi stejné dvojice.',badge:'memory • pairs',img:'assets/cards/star.svg',name:'pexeso',hint:'Otoč dvě stejné kartičky.',en:'memory',
+    pairs:[{img:'assets/cards/star.svg',name:'hvězda'},{img:'assets/cards/moon.svg',name:'měsíc'},{img:'assets/cards/apple.svg',name:'jablko'},{img:'assets/cards/ball.svg',name:'míč'}],
+    hints:['Pamatuj si, kde co bylo.','Hledáme dvě stejné karty.','Zkus si zapamatovat obrázky.']}
+  ]}
+];
 
-        attempts += 1;
-        attemptsText.textContent = `Pokusy: ${attempts}/${maxAttempts}`;
+const state={soundEnabled:false,audioCtx:null,lastSpeechParts:null,totalStars:worlds.reduce((a,w)=>a+w.stars,0),stars:0,unlockedWorlds:['colors'],completedWorlds:[],worldProgress:{},stickers:[],currentWorld:null,currentTaskIndex:0,hintStep:0,dragMatches:0,dragState:null,memoryOpen:[],memoryMatched:0};
+const els={}; ['homeScreen','playScreen','soundBtn','homeBtn','repeatBtn','continueBtn','worldGrid','progressText','starDisplay','bannerTitle','bannerSub','worldStarsPill','taskPill','showImg','showName','showHint','showEnglish','mascotImg','speech','hintBtn','nextBtn','playArea','stickersBar'].forEach(id=>els[id]=document.getElementById(id));
 
-        if (value === secret) {
-          wins += 1;
-          winsText.textContent = `Výhry: ${wins}`;
-          restartRound("Paráda! Správné číslo 🎉 Nové kolo!");
-          return;
-        }
-
-        if (attempts >= maxAttempts) {
-          restartRound(`Došly pokusy. Tajné číslo bylo ${secret}. Zkus to znovu!`);
-          return;
-        }
-
-        statusText.textContent = value < secret ? "Tajné číslo je větší ⬆️" : "Tajné číslo je menší ⬇️";
-      }
-
-      checkButton.addEventListener("click", checkGuess);
-      guessInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-          checkGuess();
-        }
-      });
-    </script>
-  </body>
+function loadState(){ try{ const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); if(saved){ if(saved.stars!==undefined) state.stars=saved.stars; if(saved.unlockedWorlds) state.unlockedWorlds=saved.unlockedWorlds; if(saved.completedWorlds) state.completedWorlds=saved.completedWorlds; if(saved.worldProgress) state.worldProgress=saved.worldProgress; if(saved.stickers) state.stickers=saved.stickers; } }catch(e){} worlds.forEach(w=>{ if(!state.worldProgress[w.id]) state.worldProgress[w.id]={stars:0,done:false}; }); recalcStars(); }
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify({stars:state.stars,unlockedWorlds:state.unlockedWorlds,completedWorlds:state.completedWorlds,worldProgress:state.worldProgress,stickers:state.stickers})); }
+function recalcStars(){ state.stars=Object.values(state.worldProgress).reduce((a,v)=>a+(v.stars||0),0); }
+function renderStars(el,total,current){ el.textContent=('★ '.repeat(current)+'☆ '.repeat(Math.max(0,total-current))).trim(); }
+function showScreen(id){ ['homeScreen','playScreen'].forEach(s=>document.getElementById(s).classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function updateTopProgress(){ renderStars(els.starDisplay,state.totalStars,state.stars); els.progressText.textContent=`Nasbíráno ${state.stars} z ${state.totalStars} hvězdiček.`; renderStickers(); }
+function renderStickers(){ els.stickersBar.innerHTML=''; state.stickers.forEach(id=>{ const def=stickerDefs.find(s=>s.id===id); if(!def) return; const img=document.createElement('img'); img.src=def.img; img.className='sticker'; img.alt=def.label; els.stickersBar.appendChild(img); }); if(state.stickers.length===0){ const span=document.createElement('div'); span.className='stickerChip'; span.textContent='Zatím žádné'; els.stickersBar.appendChild(span);} }
+function addSticker(){ const ids=stickerDefs.map(s=>s.id); const next=ids[state.stickers.length % ids.length]; state.stickers.push(next); saveState(); renderStickers(); }
+function initAudio(){ if(!state.audioCtx){ const Ctx=window.AudioContext||window.webkitAudioContext; if(Ctx) state.audioCtx=new Ctx(); } }
+function beep(type='ok'){ if(!state.soundEnabled) return; initAudio(); if(!state.audioCtx) return; const ctx=state.audioCtx, now=ctx.currentTime; const tones={ok:[660,880],bad:[220,180],hint:[500,620],animal:[390,520],memory:[740,920]}[type]||[660,880]; tones.forEach((freq,i)=>{ const o=ctx.createOscillator(),g=ctx.createGain(); o.type=type==='bad'?'square':'sine'; o.frequency.value=freq; g.gain.setValueAtTime(0.0001,now+i*0.11); g.gain.exponentialRampToValueAtTime(0.12,now+i*0.11+0.01); g.gain.exponentialRampToValueAtTime(0.0001,now+i*0.11+0.12); o.connect(g).connect(ctx.destination); o.start(now+i*0.11); o.stop(now+i*0.11+0.13); }); }
+function getVoice(prefix){ const voices=speechSynthesis.getVoices(); return voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith(prefix))||null; }
+async function speakParts(parts){ state.lastSpeechParts=parts; if(!state.soundEnabled||!('speechSynthesis' in window)) return; speechSynthesis.cancel(); for(const p of parts){ if(!p.text) continue; await new Promise(resolve=>{ const u=new SpeechSynthesisUtterance(p.text); u.lang=p.lang; u.rate=p.rate||1; const voice=getVoice(p.lang.startsWith('cs')?'cs':'en'); if(voice) u.voice=voice; u.onend=resolve; u.onerror=resolve; speechSynthesis.speak(u); }); } }
+function maybeUnlockWorlds(){ worlds.forEach(w=>{ if(state.stars>=w.unlockAt && !state.unlockedWorlds.includes(w.id)) state.unlockedWorlds.push(w.id); }); }
+function renderHome(){ maybeUnlockWorlds(); saveState(); recalcStars(); updateTopProgress(); showScreen('homeScreen'); els.worldGrid.innerHTML=''; worlds.forEach(world=>{ const unlocked=state.unlockedWorlds.includes(world.id); const progress=state.worldProgress[world.id]||{stars:0,done:false}; const card=document.createElement('div'); card.className='worldCard'+(unlocked?'':' locked'); card.style.background=world.bg; card.innerHTML=`<div><div class="worldTop"><div class="worldEmoji">${world.emoji}</div><div class="tinyChip">${progress.stars}/${world.stars} ★</div></div><div class="worldTitle">${world.title}</div><div class="worldDesc">${world.desc}</div><div class="unlock">${unlocked?(progress.done?'Hotovo ✓':'Odemčeno'):`Odemkne se od ${world.unlockAt} ★`}</div></div><div class="miniActions"><button class="${unlocked?'primary':'soft'}" ${unlocked?'':'disabled'}>${unlocked?'▶️ Hrát':'🔒 Zamčeno'}</button></div>`; if(unlocked) card.querySelector('button').addEventListener('click',()=>startWorld(world.id)); els.worldGrid.appendChild(card); }); }
+function startWorld(worldId){ state.currentWorld=worlds.find(w=>w.id===worldId); state.currentTaskIndex=0; state.hintStep=0; state.dragMatches=0; state.memoryOpen=[]; state.memoryMatched=0; renderTask(); }
+function currentTask(){ return state.currentWorld.tasks[state.currentTaskIndex]; }
+function worldProgressObj(){ return state.worldProgress[state.currentWorld.id]; }
+function awardWorldStar(){ const progress=worldProgressObj(); if(progress.stars<state.currentWorld.stars){ progress.stars+=1; recalcStars(); maybeUnlockWorlds(); saveState(); updateTopProgress(); } }
+function finishWorldIfDone(){ const progress=worldProgressObj(); if(state.currentTaskIndex>=state.currentWorld.tasks.length){ progress.done=true; if(!state.completedWorlds.includes(state.currentWorld.id)) state.completedWorlds.push(state.currentWorld.id); addSticker(); saveState(); speakParts([{text:'Skvělé! Tento svět je hotový.',lang:'cs-CZ'},{text:'Great job!',lang:'en-US',rate:.9}]); setTimeout(renderHome,1000); return true; } return false; }
+function popImage(){ els.showImg.classList.add('pop'); setTimeout(()=>els.showImg.classList.remove('pop'),220); }
+function renderTask(){ showScreen('playScreen'); const world=state.currentWorld; const task=currentTask(); state.hintStep=0; state.dragMatches=0; state.memoryOpen=[]; state.memoryMatched=0; els.bannerTitle.textContent=`${world.emoji} ${world.title}`; els.bannerSub.textContent=`${task.label} ${state.currentTaskIndex+1}/${world.tasks.length}`; els.worldStarsPill.textContent=`${worldProgressObj().stars}/${world.stars} hvězd`; els.taskPill.textContent=task.badge; els.mascotImg.src=world.mascot; els.showImg.src=task.img; els.showName.textContent=task.name||task.question; els.showHint.textContent=task.hint; els.showEnglish.textContent=task.en||''; els.speech.innerHTML=`${task.question}<small>Když to nevyjde, dostaneš jemnou nápovědu.</small>`; els.playArea.innerHTML=''; if(task.type==='choice'){ renderChoiceTask(task); speakParts([{text:task.question,lang:'cs-CZ'},{text:task.en||'',lang:'en-US',rate:.9}]); } else if(task.type==='drag'){ renderDragTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } else if(task.type==='memory'){ renderMemoryTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } popImage(); }
+function onWrong(task){ const line=gentleMissLines[Math.floor(Math.random()*gentleMissLines.length)]; const hint=task.hints[Math.min(state.hintStep, task.hints.length-1)]; state.hintStep+=1; els.speech.innerHTML=`${line} ${hint}<small>Zkus to ještě jednou.</small>`; beep('bad'); speakParts([{text:line,lang:'cs-CZ'},{text:hint,lang:'cs-CZ'}]); }
+function renderChoiceTask(task){ const grid=document.createElement('div'); grid.className='choiceGrid'; task.options.slice().sort(()=>Math.random()-.5).forEach(opt=>{ const btn=document.createElement('div'); btn.className='taskCard'; btn.innerHTML=`<img src="${opt.img}" alt=""><div class="t">${opt.name}</div><div class="en">${opt.en}</div><div class="s">${opt.sub}</div>`; btn.addEventListener('click',()=>{ if(opt.ok){ btn.classList.add('good'); beep(task.label==='Zvíře'?'animal':'ok'); awardWorldStar(); speakParts([{text:praiseLines[Math.floor(Math.random()*praiseLines.length)],lang:'cs-CZ'},{text:opt.name,lang:'cs-CZ'},{text:opt.en,lang:'en-US',rate:.9}]); setTimeout(()=>{ state.currentTaskIndex+=1; if(!finishWorldIfDone()) renderTask(); },850); } else { btn.classList.add('bad'); setTimeout(()=>btn.classList.remove('bad'),280); onWrong(task); }}); grid.appendChild(btn); }); els.playArea.appendChild(grid); }
+function makeDropZone(z){ const d=document.createElement('div'); d.className='dropZone'; d.dataset.zone=z.id; d.innerHTML=`<div class="dropTitle">${z.title}</div><div class="dropSub">${z.sub}</div><div class="dropArea"></div>`; d.addEventListener('dragover',e=>e.preventDefault()); d.addEventListener('drop',e=>{ e.preventDefault(); dropOnTarget(d); }); d.addEventListener('pointerup',()=>{ if(state.dragState) dropOnTarget(d); }); return d; }
+function createFloatingFrom(card){ const rect=card.getBoundingClientRect(); const f=document.createElement('div'); f.className='floating'; f.innerHTML=card.innerHTML; f.style.left=`${rect.left+rect.width/2}px`; f.style.top=`${rect.top+rect.height/2}px`; f.style.width=`${rect.width}px`; f.style.opacity='.96'; document.body.appendChild(f); return f; }
+function pointerPos(e){ if(e.touches&&e.touches[0]) return {x:e.touches[0].clientX,y:e.touches[0].clientY}; return {x:e.clientX,y:e.clientY}; }
+function allTargets(){ return [...document.querySelectorAll('.dropZone')]; }
+function targetAt(p){ return allTargets().find(el=>{ const r=el.getBoundingClientRect(); return p.x>=r.left&&p.x<=r.right&&p.y>=r.top&&p.y<=r.bottom; }); }
+function highlightTargets(p){ allTargets().forEach(t=>t.classList.remove('activeHint')); const t=targetAt(p); if(t) t.classList.add('activeHint'); }
+function cleanupDrag(){ allTargets().forEach(t=>t.classList.remove('activeHint')); if(state.dragState?.card) state.dragState.card.style.opacity='1'; document.querySelectorAll('.floating').forEach(f=>f.remove()); state.dragState=null; }
+function attachDrag(card){ const start=(e)=>{ e.preventDefault(); state.dragState={card,zone:card.dataset.zone}; const floating=createFloatingFrom(card); card.style.opacity='.35'; const move=ev=>{ if(!state.dragState) return; const p=pointerPos(ev); floating.style.left=`${p.x}px`; floating.style.top=`${p.y}px`; highlightTargets(p); }; const end=ev=>{ if(!state.dragState) return; const p=pointerPos(ev); const t=targetAt(p); if(t) dropOnTarget(t); else cleanupDrag(); document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',end); }; document.addEventListener('pointermove',move); document.addEventListener('pointerup',end); }; card.addEventListener('pointerdown',start); card.setAttribute('draggable','true'); card.addEventListener('dragstart',()=>{ state.dragState={card,zone:card.dataset.zone}; }); }
+function renderDragTask(task){ const wrap=document.createElement('div'); wrap.innerHTML=`<div style="display:grid;gap:16px"><div><h2 style="margin:0 0 10px">${task.question}</h2><p style="margin:0;color:var(--muted)">${task.hint}</p><div class="dropWrap" id="dropWrap"></div></div><div><h2 style="margin:0 0 10px">Věci k přesunutí</h2><div class="dragGrid" id="dragGrid"></div></div></div>`; els.playArea.appendChild(wrap); const dropWrap=wrap.querySelector('#dropWrap'); const dragGrid=wrap.querySelector('#dragGrid'); task.zones.forEach(z=>dropWrap.appendChild(makeDropZone(z))); task.items.slice().sort(()=>Math.random()-.5).forEach(item=>{ const c=document.createElement('div'); c.className='dragItem'; c.dataset.zone=item.zone; c.dataset.name=item.name; c.dataset.en=item.en; c.innerHTML=`<img src="${item.img}" alt=""><div class="n">${item.name}</div><div class="en">${item.en}</div><div class="s">${item.sub}</div>`; attachDrag(c); c.addEventListener('click',()=>speakParts([{text:item.name,lang:'cs-CZ'},{text:item.en,lang:'en-US',rate:.9}])); dragGrid.appendChild(c); }); }
+function dropOnTarget(target){ if(!state.dragState) return; const task=currentTask(); const {card,zone}=state.dragState; allTargets().forEach(t=>t.classList.remove('activeHint')); document.querySelectorAll('.floating').forEach(f=>f.remove()); card.style.opacity='1'; if(target.dataset.zone===zone){ const area=target.querySelector('.dropArea'); const chip=document.createElement('div'); chip.className='tinyChip'; chip.textContent=card.dataset.name; area.appendChild(chip); card.classList.add('hidden'); beep('ok'); state.dragMatches+=1; speakParts([{text:`Správně. ${card.dataset.name} patří sem.`,lang:'cs-CZ'},{text:card.dataset.en,lang:'en-US',rate:.9}]); if(state.dragMatches>=task.items.length){ target.classList.add('done'); awardWorldStar(); setTimeout(()=>{ state.currentTaskIndex+=1; if(!finishWorldIfDone()) renderTask(); },850); } } else { onWrong(task); } state.dragState=null; }
+function renderMemoryTask(task){ const grid=document.createElement('div'); grid.className='memoryGrid'; const cards=[...task.pairs,...task.pairs].map((p,i)=>({...p,id:i+Math.random()})).sort(()=>Math.random()-.5); cards.forEach(card=>{ const el=document.createElement('div'); el.className='memoryCard'; el.dataset.name=card.name; el.dataset.open='0'; el.innerHTML=`<div class="memoryBack">❓</div>`; el.addEventListener('click',()=>{ if(el.classList.contains('matched')||el.dataset.open==='1'||state.memoryOpen.length>=2) return; el.dataset.open='1'; el.innerHTML=`<img src="${card.img}" alt="">`; state.memoryOpen.push({el,card}); if(state.memoryOpen.length===2){ const [a,b]=state.memoryOpen; if(a.card.name===b.card.name){ a.el.classList.add('matched'); b.el.classList.add('matched'); beep('memory'); state.memoryMatched+=1; state.memoryOpen=[]; if(state.memoryMatched>=task.pairs.length){ awardWorldStar(); speakParts([{text:'Skvělé, našel jsi všechny dvojice.',lang:'cs-CZ'}]); setTimeout(()=>{ state.currentTaskIndex+=1; if(!finishWorldIfDone()) renderTask(); },900); } } else { beep('bad'); setTimeout(()=>{ a.el.dataset.open='0'; b.el.dataset.open='0'; a.el.innerHTML='<div class="memoryBack">❓</div>'; b.el.innerHTML='<div class="memoryBack">❓</div>'; state.memoryOpen=[]; },720); } } }); grid.appendChild(el); }); els.playArea.appendChild(grid); }
+function repeatSpeech(){ if(state.lastSpeechParts) speakParts(state.lastSpeechParts); }
+function hintAction(){ const task=currentTask(); const hint=task.hints[Math.min(state.hintStep, task.hints.length-1)]; state.hintStep=Math.min(state.hintStep+1, task.hints.length-1); els.speech.innerHTML=`${hint}<small>Zkus to teď znovu.</small>`; beep('hint'); speakParts([{text:hint,lang:'cs-CZ'}]); }
+function nextAction(){ state.currentTaskIndex+=1; if(!finishWorldIfDone()) renderTask(); }
+els.soundBtn.addEventListener('click', async()=>{ state.soundEnabled=true; initAudio(); if(state.audioCtx&&state.audioCtx.state==='suspended'){ try{ await state.audioCtx.resume(); }catch(e){} } els.soundBtn.textContent='🔊 Zvuk zapnutý'; beep('ok'); speakParts([{text:'Ahoj! Jdeme si hrát.',lang:'cs-CZ'},{text:'Let us play.',lang:'en-US',rate:.9}]); });
+els.homeBtn.addEventListener('click', renderHome); els.repeatBtn.addEventListener('click', repeatSpeech); els.continueBtn.addEventListener('click', ()=>{ const next=worlds.find(w=>state.unlockedWorlds.includes(w.id)&&!(state.worldProgress[w.id]||{}).done)||worlds[0]; startWorld(next.id); }); els.hintBtn.addEventListener('click', hintAction); els.nextBtn.addEventListener('click', nextAction);
+loadState(); renderHome();
+</script>
+</body>
 </html>
