@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vikiho dětská hra</title>
+    <style>
+      :root {
+        font-family: "Arial", sans-serif;
+        color: #1f2a44;
+        background: #fff7f0;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+      }
+
+      .game {
+        width: min(92vw, 460px);
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 10px 24px rgba(31, 42, 68, 0.12);
+      }
+
+      h1 {
+        margin-top: 0;
+        color: #ff5f7e;
+        text-align: center;
+      }
+
+      p {
+        line-height: 1.5;
+      }
+
+      .controls {
+        display: flex;
+        gap: 8px;
+        margin: 16px 0;
+      }
+
+      input,
+      button {
+        font-size: 1rem;
+        border-radius: 10px;
+        border: 2px solid #ffd4de;
+        padding: 10px;
+      }
+
+      input {
+        flex: 1;
+      }
+
+      button {
+        cursor: pointer;
+        background: #ff5f7e;
+        color: #fff;
+        border-color: #ff5f7e;
+      }
+
+      button:hover {
+        background: #ff3f65;
+      }
+
+      .status {
+        min-height: 24px;
+        font-weight: 700;
+      }
+
+      .scoreboard {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 700;
+        color: #455b8b;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="game">
+      <h1>🎈 Hádej číslo 🎈</h1>
+      <p>Uhádni tajné číslo od <strong>1 do 10</strong>. Máš maximálně 5 pokusů.</p>
+
+      <div class="controls">
+        <input id="guess" type="number" min="1" max="10" placeholder="Zadej číslo" />
+        <button id="check" type="button">Zkusit</button>
+      </div>
+
+      <p id="status" class="status" aria-live="polite">Začni hádat 😊</p>
+
+      <div class="scoreboard">
+        <span id="attempts">Pokusy: 0/5</span>
+        <span id="wins">Výhry: 0</span>
+      </div>
+    </main>
+
+    <script>
+      let secret = Math.floor(Math.random() * 10) + 1;
+      let attempts = 0;
+      let wins = 0;
+      const maxAttempts = 5;
+
+      const guessInput = document.getElementById("guess");
+      const checkButton = document.getElementById("check");
+      const statusText = document.getElementById("status");
+      const attemptsText = document.getElementById("attempts");
+      const winsText = document.getElementById("wins");
+
+      function restartRound(message) {
+        attempts = 0;
+        secret = Math.floor(Math.random() * 10) + 1;
+        attemptsText.textContent = "Pokusy: 0/5";
+        statusText.textContent = message;
+        guessInput.value = "";
+      }
+
+      function checkGuess() {
+        const value = Number(guessInput.value);
+
+        if (!Number.isInteger(value) || value < 1 || value > 10) {
+          statusText.textContent = "Zadej celé číslo od 1 do 10.";
+          return;
+        }
+
+        attempts += 1;
+        attemptsText.textContent = `Pokusy: ${attempts}/${maxAttempts}`;
+
+        if (value === secret) {
+          wins += 1;
+          winsText.textContent = `Výhry: ${wins}`;
+          restartRound("Paráda! Uhádl/a jsi to 🎉 Nové kolo!");
+          return;
+        }
+
+        if (attempts >= maxAttempts) {
+          restartRound(`Došly pokusy. Tajné číslo bylo ${secret}. Zkus to znovu!`);
+          return;
+        }
+
+        statusText.textContent = value < secret ? "Tajné číslo je větší ⬆️" : "Tajné číslo je menší ⬇️";
+      }
+
+      checkButton.addEventListener("click", checkGuess);
+      guessInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          checkGuess();
+        }
+      });
+    </script>
+  </body>
+</html>
