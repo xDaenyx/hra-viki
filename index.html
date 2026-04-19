@@ -38,9 +38,9 @@ background:var(--card);box-shadow:var(--shadow);border-radius:var(--radius)}
 .mascotCard{display:flex;gap:14px;align-items:center}.mascotImg{width:96px;height:96px;object-fit:contain;animation:bob 2.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}} .speechBubble{padding:14px 16px;font-size:18px;font-weight:800;line-height:1.35;flex:1}
 .choiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
-.taskCard{min-height:300px;padding:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;transition:transform .14s ease, outline .14s ease}
+.taskCard{padding:10px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;cursor:pointer;transition:transform .14s ease, outline .14s ease}
 .taskCard:hover{transform:translateY(-2px)} .taskCard.good{outline:4px solid var(--ok);transform:scale(1.03)} .taskCard.bad{animation:shake .28s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}} .taskCard img{width:200px;height:200px;object-fit:contain}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}} .taskCard img{width:min(120px,38vw);height:min(120px,38vw);object-fit:contain}
 .taskCard .t{font-size:26px;font-weight:900}.taskCard .en{display:none}.taskCard .s{display:none}
 body.lang-both .taskCard .en,body.lang-en .taskCard .en{display:block}
 body.lang-en .taskCard .t{display:none}
@@ -167,7 +167,7 @@ const worlds=[
    {type:'sequence',label:'Farma',question:'Dej zelenou papriku do traktoru',badge:'farma',img:'assets/cards/pepper_green.svg',name:'paprika',hint:'Najdi zelenou papriku.',target:'green',steps:3,
     items:[{img:'assets/cards/pepper_green.svg',name:'paprika',color:'green'},{img:'assets/cards/apple.svg',name:'jablko',color:'red'}]}
   ]},
- {id:'animals',title:'Zvířata',emoji:'🐶',mascot:'assets/mascots/bear.svg',stars:4,unlockAt:2,desc:'Zvířata a nápovědy.',bg:'linear-gradient(135deg,#eaffef,#fff)',
+ {id:'animals',title:'Zvířata',emoji:'🐶',mascot:'assets/mascots/bear.svg',stars:4,unlockAt:0,desc:'Zvířata a nápovědy.',bg:'linear-gradient(135deg,#eaffef,#fff)',
   tasks:[
    {type:'choice',label:'Zvíře',question:'Kdo dělá haf haf?',badge:'pes • dog',img:'assets/cards/dog.svg',name:'pes',hint:'Je to domácí zvíře.',en:'dog',
     options:[{img:'assets/cards/dog.svg',name:'pes',en:'dog',ok:true,sub:'haf haf'},{img:'assets/cards/cat.svg',name:'kočka',en:'cat',ok:false,sub:'mňau'},{img:'assets/cards/cow.svg',name:'kráva',en:'cow',ok:false,sub:'bú'},{img:'assets/cards/duck.svg',name:'kachna',en:'duck',ok:false,sub:'kač kač'}],
@@ -176,32 +176,32 @@ const worlds=[
     options:[{img:'assets/cards/cat.svg',name:'kočka',en:'cat',ok:true,sub:'mňau'},{img:'assets/cards/dog.svg',name:'pes',en:'dog',ok:false,sub:'haf'},{img:'assets/cards/duck.svg',name:'kachna',en:'duck',ok:false,sub:'kač kač'},{img:'assets/cards/cow.svg',name:'kráva',en:'cow',ok:false,sub:'bú'}],
     hints:['Má tlapky.','Má vousky.','Dělá mňau.']}
   ]},
- {id:'drag',title:'Tahání a třídění',emoji:'🧺',mascot:'assets/mascots/rabbit.svg',stars:4,unlockAt:5,desc:'Přetahuj věci do správných skupin.',bg:'linear-gradient(135deg,#eef8ff,#fff)',
+ {id:'drag',title:'Tahání a třídění',emoji:'🧺',mascot:'assets/mascots/rabbit.svg',stars:4,unlockAt:0,desc:'Přetahuj věci do správných skupin.',bg:'linear-gradient(135deg,#eef8ff,#fff)',
   tasks:[
    {type:'drag',label:'Třídění',question:'Ovoce a oblečení',badge:'fruit • clothes',img:'assets/cards/apple.svg',name:'třídění',hint:'Přesuň věci tam, kam patří.',en:'sort',
     zones:[{id:'fruit',title:'Košík na ovoce',sub:'Sem patří ovoce.'},{id:'clothes',title:'Skříň na oblečení',sub:'Sem patří oblečení.'}],
     items:[{img:'assets/cards/apple.svg',name:'jablko',en:'apple',zone:'fruit',sub:'ovoce'},{img:'assets/cards/banana.svg',name:'banán',en:'banana',zone:'fruit',sub:'ovoce'},{img:'assets/cards/tshirt.svg',name:'tričko',en:'t-shirt',zone:'clothes',sub:'oblečení'},{img:'assets/cards/sock.svg',name:'ponožka',en:'sock',zone:'clothes',sub:'oblečení'}],
     hints:['Přemýšlej, co se jí a co se obléká.','Jablko a banán jsou ovoce.','Tričko a ponožka jsou oblečení.']}
   ]},
- {id:'count',title:'Počítání',emoji:'🔢',mascot:'assets/mascots/owl.svg',stars:4,unlockAt:8,desc:'Počítání a množství.',bg:'linear-gradient(135deg,#f4efff,#fff)',
+ {id:'count',title:'Počítání',emoji:'🔢',mascot:'assets/mascots/owl.svg',stars:4,unlockAt:0,desc:'Počítání a množství.',bg:'linear-gradient(135deg,#f4efff,#fff)',
   tasks:[
    {type:'choice',label:'Počet',question:'Kde jsou 2 jablka?',badge:'2 • two',img:'assets/cards/two_apples.svg',name:'dvě jablka',hint:'Hledej dvě.',en:'two apples',
     options:[{img:'assets/cards/two_apples.svg',name:'2 jablka',en:'two apples',ok:true,sub:'dvě'},{img:'assets/cards/apple.svg',name:'1 jablko',en:'one apple',ok:false,sub:'jedno'},{img:'assets/cards/three_stars.svg',name:'3 hvězdy',en:'three stars',ok:false,sub:'tři'},{img:'assets/cards/banana.svg',name:'1 banán',en:'one banana',ok:false,sub:'jedno'}],
     hints:['Hledáme dvě věci.','Je to víc než jedna.','Jsou to přesně 2 jablka.']}
   ]},
- {id:'transport',title:'Doprava',emoji:'🚗',mascot:'assets/mascots/pig.svg',stars:4,unlockAt:10,desc:'Auta, vlaky, lodě a letadla.',bg:'linear-gradient(135deg,#fff2e6,#fff)',
+ {id:'transport',title:'Doprava',emoji:'🚗',mascot:'assets/mascots/pig.svg',stars:4,unlockAt:0,desc:'Auta, vlaky, lodě a letadla.',bg:'linear-gradient(135deg,#fff2e6,#fff)',
   tasks:[
    {type:'choice',label:'Doprava',question:'Co jezdí po silnici?',badge:'car • road',img:'assets/cards/car.svg',name:'auto',hint:'Jezdí po silnici.',en:'car',
     options:[{img:'assets/cards/car.svg',name:'auto',en:'car',ok:true,sub:'silnice'},{img:'assets/cards/boat.svg',name:'loď',en:'boat',ok:false,sub:'voda'},{img:'assets/cards/plane.svg',name:'letadlo',en:'plane',ok:false,sub:'obloha'},{img:'assets/cards/train.svg',name:'vlak',en:'train',ok:false,sub:'koleje'}],
     hints:['Jezdí po silnici.','Má kola.','Je to auto.']}
   ]},
- {id:'winter',title:'Zimní svět',emoji:'❄️',mascot:'assets/mascots/princess.svg',stars:4,unlockAt:12,desc:'Sníh, led a zimní věci.',bg:'linear-gradient(135deg,#eefaff,#fff)',
+ {id:'winter',title:'Zimní svět',emoji:'❄️',mascot:'assets/mascots/princess.svg',stars:4,unlockAt:0,desc:'Sníh, led a zimní věci.',bg:'linear-gradient(135deg,#eefaff,#fff)',
   tasks:[
    {type:'choice',label:'Zima',question:'Co patří princezně?',badge:'crown • princess',img:'assets/cards/crown.svg',name:'koruna',hint:'Nosí se na hlavě.',en:'crown',
     options:[{img:'assets/cards/crown.svg',name:'koruna',en:'crown',ok:true,sub:'princezna'},{img:'assets/cards/piglet.svg',name:'prasátko',en:'piglet',ok:false,sub:'zvíře'},{img:'assets/cards/window.svg',name:'okno',en:'window',ok:false,sub:'doma'},{img:'assets/cards/wood.svg',name:'dřevo',en:'wood',ok:false,sub:'materiál'}],
     hints:['Je to lesklé.','Nosí se to na hlavě.','Je to koruna.']}
   ]},
- {id:'memory',title:'Pexeso',emoji:'🧠',mascot:'assets/mascots/pig.svg',stars:4,unlockAt:14,desc:'Najdi dvojice stejných obrázků.',bg:'linear-gradient(135deg,#fff3fa,#fff)',
+ {id:'memory',title:'Pexeso',emoji:'🧠',mascot:'assets/mascots/pig.svg',stars:4,unlockAt:0,desc:'Najdi dvojice stejných obrázků.',bg:'linear-gradient(135deg,#fff3fa,#fff)',
   tasks:[
    {type:'memory',label:'Paměť',question:'Najdi stejné dvojice.',badge:'memory • pairs',img:'assets/cards/star.svg',name:'pexeso',hint:'Otoč dvě stejné kartičky.',en:'memory',
     pairs:[{img:'assets/cards/star.svg',name:'hvězda'},{img:'assets/cards/moon.svg',name:'měsíc'},{img:'assets/cards/apple.svg',name:'jablko'},{img:'assets/cards/ball.svg',name:'míč'}],
