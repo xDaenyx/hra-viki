@@ -58,6 +58,14 @@ body.lang-en .dragItem .n{display:none}
 body.lang-cs .englishLine{display:none}
 @media (max-width:980px){.dragGrid,.memoryGrid{grid-template-columns:1fr}} 
 @media (max-width:620px){.choiceGrid,.dropWrap{grid-template-columns:1fr}.dragGrid,.memoryGrid{grid-template-columns:1fr}.toolbar button{width:100%}.toolbar{width:100%}}
+.sequenceScene{display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px}
+.sequenceScene .tractor{font-size:3rem;transition:transform .8s ease}
+.sequenceScene .tractor.move{transform:translateX(80px)}
+.sequenceScene .field{background:#d4edaf;border-radius:12px;padding:12px 24px;min-width:240px;text-align:center}
+.sequenceScene .row{display:flex;gap:8px;justify-content:center;min-height:2rem}
+.sequenceScene .plant{font-size:1.8rem;animation:popIn .3s ease}
+.sequenceScene .items{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -155,7 +163,9 @@ const worlds=[
     hints:['Je to ovoce.','Je to kulaté.','Je zelené venku a červené uvnitř.']},
    {type:'choice',label:'Barva',question:'Co je modré?',badge:'modrá • blue',img:'assets/cards/cap.svg',name:'čepice',hint:'Nosí se na hlavě.',en:'cap',
     options:[{img:'assets/cards/cap.svg',name:'čepice',en:'cap',ok:true,sub:'oblečení'},{img:'assets/cards/banana.svg',name:'banán',en:'banana',ok:false,sub:'ovoce'},{img:'assets/cards/wood.svg',name:'dřevo',en:'wood',ok:false,sub:'materiál'},{img:'assets/cards/window.svg',name:'okno',en:'window',ok:false,sub:'doma'}],
-    hints:['Je to oblečení.','Nosí se na hlavě.','Může být modrá.']}
+    hints:['Je to oblečení.','Nosí se na hlavě.','Může být modrá.']},
+   {type:'sequence',label:'Farma',question:'Dej zelenou papriku do traktoru',badge:'farma',img:'assets/cards/pepper_green.svg',name:'paprika',hint:'Najdi zelenou papriku.',target:'green',steps:3,
+    items:[{img:'assets/cards/pepper_green.svg',name:'paprika',color:'green'},{img:'assets/cards/apple.svg',name:'jablko',color:'red'}]}
   ]},
  {id:'animals',title:'Zvířata',emoji:'🐶',mascot:'assets/mascots/bear.svg',stars:4,unlockAt:2,desc:'Zvířata a nápovědy.',bg:'linear-gradient(135deg,#eaffef,#fff)',
   tasks:[
@@ -222,8 +232,43 @@ function worldProgressObj(){ return state.worldProgress[state.currentWorld.id]; 
 function awardWorldStar(){ const progress=worldProgressObj(); if(progress.stars<state.currentWorld.stars){ progress.stars+=1; recalcStars(); maybeUnlockWorlds(); saveState(); updateTopProgress(); } }
 function finishWorldIfDone(){ const progress=worldProgressObj(); if(state.currentTaskIndex>=state.currentWorld.tasks.length){ progress.done=true; if(!state.completedWorlds.includes(state.currentWorld.id)) state.completedWorlds.push(state.currentWorld.id); addSticker(); saveState(); speakParts([{text:'Skvělé! Tento svět je hotový.',lang:'cs-CZ'},{text:'Great job!',lang:'en-US',rate:.9}]); setTimeout(renderHome,1000); return true; } return false; }
 function popImage(){ els.showImg.classList.add('pop'); setTimeout(()=>els.showImg.classList.remove('pop'),220); }
-function renderTask(){ showScreen('playScreen'); const world=state.currentWorld; const task=currentTask(); state.hintStep=0; state.dragMatches=0; state.memoryOpen=[]; state.memoryMatched=0; els.bannerTitle.textContent=`${world.emoji} ${world.title}`; els.bannerSub.textContent=`${task.label} ${state.currentTaskIndex+1}/${world.tasks.length}`; els.worldStarsPill.textContent=`${worldProgressObj().stars}/${world.stars} hvězd`; els.taskPill.textContent=task.badge; els.mascotImg.src=world.mascot; els.showImg.src=task.img; els.showName.textContent=task.name||task.question; els.showHint.textContent=task.hint; els.showEnglish.textContent=task.en||''; els.speech.innerHTML=`${task.question}<small>Když to nevyjde, dostaneš jemnou nápovědu.</small>`; els.playArea.innerHTML=''; if(task.type==='choice'){ renderChoiceTask(task); speakParts([{text:task.question,lang:'cs-CZ'},{text:task.en||'',lang:'en-US',rate:.9}]); } else if(task.type==='drag'){ renderDragTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } else if(task.type==='memory'){ renderMemoryTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } popImage(); }
+function renderTask(){ showScreen('playScreen'); const world=state.currentWorld; const task=currentTask(); state.hintStep=0; state.dragMatches=0; state.memoryOpen=[]; state.memoryMatched=0; els.bannerTitle.textContent=`${world.emoji} ${world.title}`; els.bannerSub.textContent=`${task.label} ${state.currentTaskIndex+1}/${world.tasks.length}`; els.worldStarsPill.textContent=`${worldProgressObj().stars}/${world.stars} hvězd`; els.taskPill.textContent=task.badge; els.mascotImg.src=world.mascot; els.showImg.src=task.img; els.showName.textContent=task.name||task.question; els.showHint.textContent=task.hint; els.showEnglish.textContent=task.en||''; els.speech.innerHTML=`${task.question}<small>Když to nevyjde, dostaneš jemnou nápovědu.</small>`; els.playArea.innerHTML=''; if(task.type==='choice'){ renderChoiceTask(task); speakParts([{text:task.question,lang:'cs-CZ'},{text:task.en||'',lang:'en-US',rate:.9}]); } else if(task.type==='drag'){ renderDragTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } else if(task.type==='memory'){ renderMemoryTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } else if(task.type==='sequence'){ renderSequenceTask(task); speakParts([{text:task.question,lang:'cs-CZ'}]); } popImage(); }
 function onWrong(task){ const line=gentleMissLines[Math.floor(Math.random()*gentleMissLines.length)]; const hint=task.hints[Math.min(state.hintStep, task.hints.length-1)]; state.hintStep+=1; els.speech.innerHTML=`${line} ${hint}<small>Zkus to ještě jednou.</small>`; beep('bad'); speakParts([{text:line,lang:'cs-CZ'},{text:hint,lang:'cs-CZ'}]); }
+function renderSequenceTask(task){
+  let step=0;
+  const wrap=document.createElement('div');
+  wrap.className='sequenceScene';
+  wrap.innerHTML=`<div class="tractor" id="tractor">🚜</div><div class="field"><div class="row" id="row"></div></div><div class="items" id="items"></div>`;
+  const itemsDiv=wrap.querySelector('#items');
+  const tractor=wrap.querySelector('#tractor');
+  const row=wrap.querySelector('#row');
+  task.items.forEach(item=>{
+    const el=document.createElement('div');
+    el.className='taskCard';
+    el.innerHTML=`<img src="${item.img}" alt=""><div>${item.name}</div>`;
+    el.onclick=()=>{ if(item.color===task.target){ runSequence(el); } else { onWrong(task); } };
+    itemsDiv.appendChild(el);
+  });
+  function runSequence(el){
+    beep('ok');
+    el.style.opacity='0';
+    tractor.classList.add('move');
+    setTimeout(()=>{
+      tractor.classList.remove('move');
+      const plant=document.createElement('div');
+      plant.className='plant';
+      plant.textContent='🌱';
+      row.appendChild(plant);
+      step++;
+      if(step>=task.steps){
+        speakParts([{text:'Hotovo!',lang:'cs-CZ'}]);
+        awardWorldStar();
+        setTimeout(()=>{ state.currentTaskIndex++; if(!finishWorldIfDone()) renderTask(); },900);
+      }
+    },800);
+  }
+  els.playArea.appendChild(wrap);
+}
 function renderChoiceTask(task){ const grid=document.createElement('div'); grid.className='choiceGrid'; task.options.slice().sort(()=>Math.random()-.5).forEach(opt=>{ const btn=document.createElement('div'); btn.className='taskCard'; btn.innerHTML=`<img src="${opt.img}" alt=""><div class="t">${opt.name}</div><div class="en">${opt.en}</div><div class="s">${opt.sub}</div>`; btn.addEventListener('click',()=>{ if(opt.ok){ btn.classList.add('good'); beep(task.label==='Zvíře'?'animal':'ok'); awardWorldStar(); speakParts([{text:praiseLines[Math.floor(Math.random()*praiseLines.length)],lang:'cs-CZ'},{text:opt.name,lang:'cs-CZ'},{text:opt.en,lang:'en-US',rate:.9}]); setTimeout(()=>{ state.currentTaskIndex+=1; if(!finishWorldIfDone()) renderTask(); },850); } else { btn.classList.add('bad'); setTimeout(()=>btn.classList.remove('bad'),280); onWrong(task); }}); grid.appendChild(btn); }); els.playArea.appendChild(grid); }
 function makeDropZone(z){ const d=document.createElement('div'); d.className='dropZone'; d.dataset.zone=z.id; d.innerHTML=`<div class="dropTitle">${z.title}</div><div class="dropSub">${z.sub}</div><div class="dropArea"></div>`; d.addEventListener('dragover',e=>e.preventDefault()); d.addEventListener('drop',e=>{ e.preventDefault(); dropOnTarget(d); }); d.addEventListener('pointerup',()=>{ if(state.dragState) dropOnTarget(d); }); return d; }
 function createFloatingFrom(card){ const rect=card.getBoundingClientRect(); const f=document.createElement('div'); f.className='floating'; f.innerHTML=card.innerHTML; f.style.left=`${rect.left+rect.width/2}px`; f.style.top=`${rect.top+rect.height/2}px`; f.style.width=`${rect.width}px`; f.style.opacity='.96'; document.body.appendChild(f); return f; }
