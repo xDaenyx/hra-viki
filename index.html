@@ -1,4 +1,20 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#FFF8E1" />
+<title>Herní Svět 🎮</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}body{margin:0}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef } = React;
 
 /* ═══════════════════ DATA ═══════════════════ */
 const ANIMALS = [
@@ -461,8 +477,19 @@ function ShapeGame({onStar,onFinish}){
   </div>;
 }
 
+/* ═══════════════════ WORLDS ═══════════════════ */
+const WORLDS = [
+  {id:'explore',  title:'Prozkoumej!', emoji:'👶', desc:'Ťukej a uč se nová slova.',    color:'#FFF9C4', unlockAt:0},
+  {id:'animals',  title:'Zvířata',     emoji:'🐶', desc:'Kdo dělá jaký zvuk?',           color:'#E8F5E9', unlockAt:0},
+  {id:'colors',   title:'Barvy',       emoji:'🌈', desc:'Poznej barvy kolem nás.',        color:'#E3F2FD', unlockAt:0},
+  {id:'counting', title:'Počítání',    emoji:'🔢', desc:'Počítej s námi!',                color:'#F3E5F5', unlockAt:0},
+  {id:'sorting',  title:'Třídění',     emoji:'🧺', desc:'Kam co patří?',                  color:'#FFF3E0', unlockAt:0},
+  {id:'memory',   title:'Pexeso',      emoji:'🧠', desc:'Najdi dvojice!',                 color:'#FCE4EC', unlockAt:0},
+  {id:'shapes',   title:'Tvary',       emoji:'⭕', desc:'Poznáš všechny tvary?',          color:'#E0F7FA', unlockAt:0},
+];
+
 /* ═══════════════════ MAIN APP ═══════════════════ */
-export default function App(){
+function App(){
   const [screen,setScreen]=useState('home');
   const [world,setWorld]=useState(null);
   const [stars,setStars]=useState(0);
@@ -628,3 +655,8 @@ export default function App(){
     </div>
   );
 }
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
