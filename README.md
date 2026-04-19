@@ -1,2 +1,7 @@
 # hra-viki
-detska hra
+
+Jednoduchá dětská hra „Hádej číslo“.
+
+## Spuštění
+
+Otevři soubor `index.html` v prohlížeči.
